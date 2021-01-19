@@ -5,11 +5,19 @@
   import throttle from 'lodash.throttle'
 
   const defaultCode = `import React from 'react'
-import { render } from 'react-dom'
+
+const root = document.querySelector('#root')
+root.textContent = 'Loading...'
 
 const App = () => <div>Hello ESbin</div>
 
-render(<App />, document.querySelector('#root'))`;
+async function init() {
+  // You can dynamic import
+  const { render } = await import('react-dom')
+  render(<App />, root)
+}
+
+init()`;
 
   let transformed = "";
 
