@@ -1,7 +1,12 @@
 const PKG = 'jspm.dev'
+import { currentImportPackage } from '../store'
 
-export const importHelper = (pkgName) => {
-  return `https://${PKG}/${pkgName}`;
+export const importHelper = async (pkgName) => {
+  const url = `https://${PKG}/${pkgName}`;
+  currentImportPackage.set(pkgName)
+  const pkg = await import(url)
+  currentImportPackage.set(null)
+  return pkg
 };
 
 export function jspmPlugin({ types: t }) {

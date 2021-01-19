@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "dev": "snowpack dev"
+    "dev": "snowpack dev",
+    "build": "snowpack build"
   },
   "devDependencies": {
     "@snowpack/plugin-postcss": "^1.1.0",
@@ -12,6 +13,7 @@
     "tailwindcss": "^2.0.2"
   },
   "dependencies": {
+    "lodash.throttle": "^4.1.1",
     "svelte": "^3.31.2"
   }
 }
