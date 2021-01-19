@@ -1,5 +1,7 @@
+const PKG = 'jspm.dev'
+
 export const importHelper = (pkgName) => {
-  return `//jspm.dev/${pkgName}`;
+  return `https://${PKG}/${pkgName}`;
 };
 
 export function jspmPlugin({ types: t }) {
@@ -13,7 +15,7 @@ export function jspmPlugin({ types: t }) {
             .every(Boolean)
         ) {
           path.node.source = t.stringLiteral(
-            `//jspm.dev/${value}`
+            `https://${PKG}/${value}`
           );
         }
       },
@@ -26,7 +28,7 @@ export function jspmPlugin({ types: t }) {
               .every(Boolean)
           ) {
             path.node.arguments[0] = t.stringLiteral(
-              `//jspm.dev/${value}`
+              `https://${PKG}/${value}`
             );
           }
         }

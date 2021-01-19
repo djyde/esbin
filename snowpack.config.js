@@ -1,3 +1,3 @@
 module.exports = {
-  plugins: ["@snowpack/plugin-svelte"],
+  plugins: ["@snowpack/plugin-svelte", "@snowpack/plugin-postcss"],
 };

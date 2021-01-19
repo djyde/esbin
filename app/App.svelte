@@ -1,12 +1,19 @@
 <script>
+  import { importHelper, jspmPlugin } from "../utils";
+  import { onMount } from "svelte";
 
-  import { importHelper, jspmPlugin } from '../utils'
+  const defaultCode = `import React from 'react'
+import { render } from 'react-dom'
 
-  let babelLoaded = false
+const App = () => <div>Hello ESbin</div>
 
-  let code = ''
+render(<App />, document.querySelector('#root'))`
 
-  let transformed = ''
+  let babelLoaded = false;
+  let code = "";
+  let transformed = "";
+
+  let cm
 
   $: htmlCode = `
     <!DOCTYPE html>
@@ -16,35 +23,65 @@
         \<script type="module"\>${transformed}\<\/script>
       </body>
     </html>
-  `
+  `;
+
+  let editor;
+
+  onMount(() => {
+    cm = window.CodeMirror(editor, {
+      value: defaultCode,
+      theme: 'duotone-light',
+      lineNumbers: true,
+      mode: 'javascript'
+    });
+  });
 
   async function transform() {
-    const babel = await import(importHelper('@babel/core'))
-    const presetReact = await import(importHelper('@babel/preset-react'))
-    const renamePlugin = await import(importHelper('babel-plugin-transform-rename-import'))
-    babel.transform(code, {
-      plugins:[
-        jspmPlugin
-      ],
-      presets: [
-        presetReact.default
-      ],
-    }, (err, result) => {
-      if (err) {
-        console.error(err)
-      } else {
-        transformed = result.code
-        console.log(result.code)
-      }
-    })
-  }
+    if (!cm) {
+      return
+    }
 
+    const babel = await import(importHelper("@babel/core"));
+    const presetReact = await import(importHelper("@babel/preset-react"));
+    const renamePlugin = await import(
+      importHelper("babel-plugin-transform-rename-import")
+    );
+    babel.transform(
+      cm.getValue(),
+      {
+        plugins: [jspmPlugin],
+        presets: [presetReact.default],
+      },
+      (err, result) => {
+        if (err) {
+          console.error(err);
+        } else {
+          transformed = result.code;
+          console.log(result.code);
+        }
+      }
+    );
+  }
 </script>
 
-<div>
-  <textarea bind:value={code} name="code" id="code" cols="30" rows="10"></textarea>
+<div class="h-full flex flex-col">
+  <nav class="p-4 shadow-sm mb-1 flex">
+    <span class="font-bold">ESbin</span>
 
-  <iframe srcdoc={htmlCode} title="demo" frameborder="0"></iframe>
+    <div>
+      <button class="bg-green-500 text-gray-50 px-2 ml-2" on:click={transform}
+        >Run</button
+      >
+    </div>
+  </nav>
 
-  <button on:click={transform}>trans</button>
+  <div class="h-full flex">
+    <div id="editor" class="flex-1">
+      <div bind:this={editor} class="w-full h-full" />
+    </div>
+
+    <div id="preview" class="flex-1">
+      <iframe class="w-full" srcdoc={htmlCode} title="demo" frameborder="0" />
+    </div>
+  </div>
 </div>
