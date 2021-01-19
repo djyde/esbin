@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "dev": "snowpack dev"
+  },
+  "devDependencies": {
+    "@snowpack/plugin-svelte": "^3.5.2",
+    "snowpack": "^3.0.11"
+  },
+  "dependencies": {
+    "svelte": "^3.31.2"
+  }
+}
