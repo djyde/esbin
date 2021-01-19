@@ -90,10 +90,8 @@ init()`;
   <nav class="p-4 shadow-sm mb-1 flex">
     <span class="font-bold">ESbin</span>
 
-    <div class="flex flex-1 justify-center">
-      <div class="self-center">
-
-      </div>
+    <div class="ml-4">
+      <a class="underline" href="https://github.com/djyde/esbin">GitHub</a>
     </div>
   </nav>
 
