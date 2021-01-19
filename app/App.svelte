@@ -4,7 +4,7 @@
   import { onMount } from "svelte";
   import throttle from 'lodash.throttle'
 
-  const defaultCode = `// import any npm packages here, I will import ES Module version (thanks jspm.dev)
+  const defaultCode = `// import any npm packages here, it will import the ES Module version (thanks jspm.dev)
   
 import React from 'react'
 
