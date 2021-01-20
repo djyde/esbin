@@ -71,6 +71,7 @@ init()`;
     transformingInfo = 'Processing CSS'
     const postcss = (await importHelper("postcss")).default
     const autoprefixer = (await importHelper('autoprefixer')).default
+
     try {
       const begin = performance.now()
       const processor = postcss([
@@ -127,7 +128,7 @@ init()`;
 </script>
 
 <div class="h-full flex flex-col">
-  <nav class="p-4 shadow-sm mb-1 flex">
+  <nav class="p-4 shadow-sm flex">
     <span class="font-bold">ESbin</span>
 
     <div class="ml-4">
@@ -158,11 +159,21 @@ init()`;
 
   <div class="h-full flex">
 
-    <div class="flex-1 flex">
+    <div class="flex-1 flex flex-col border-r">
+      <div class="flex p-2">
+        <div>
+          CSS
+        </div>
+      </div>
       <div bind:this={cssEditor$} class="flex-1 overflow-scroll"></div>
     </div>
 
-    <div id="editor" class="flex-1 flex flex-col">
+    <div id="editor" class="flex-1 flex flex-col border-r">
+      <div class="flex p-2">
+        <div>
+          JavaScript (Babel)
+        </div>
+      </div>
       <div bind:this={jsEditor$} class="flex-1 overflow-scroll"></div>
     </div>
 
