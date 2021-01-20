@@ -96,3 +96,22 @@ export const makeHTML = (css, js) => {
     </html>
   `;
 };
+
+export const defaultJSCode = `// import any npm packages here, it will import the ES Module version (thanks jspm.dev)
+  
+import React from 'react'
+const root = document.querySelector('#root')
+root.textContent = 'Loading...'
+const App = () => <div>Hello ESbin</div>
+async function init() {
+  // You can dynamic import
+  const { render } = await import('react-dom')
+  render(<App />, root)
+}
+init()`;
+
+export const defaultCSSCode = `body {
+  color: teal;
+  font-size: 24px;
+  font-weight: bold;
+}`

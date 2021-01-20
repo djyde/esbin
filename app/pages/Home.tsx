@@ -1,7 +1,7 @@
 import loader from '@monaco-editor/loader'
 import { Box, ChakraProvider, Flex, Grid, Image, Link, Spacer, Stack, Text, VStack } from "@chakra-ui/react"
 import React, { useState } from 'react'
-import { db, makeHTML, transformCSS, transformJS } from '../utils'
+import { db, defaultCSSCode, defaultJSCode, makeHTML, transformCSS, transformJS } from '../utils'
 import { throttle } from 'lodash'
 // @ts-expect-error
 import loading from '../loading.svg'
@@ -25,7 +25,7 @@ export default function Home() {
     const monaco = await loader.init()
 
     const jsEditor = monaco.editor.create($jsEditor.current, {
-      value: await db.getItem('js') || '',
+      value: await db.getItem('js') || defaultJSCode,
       language: 'javascript',
       minimap: {
         enabled: false
@@ -33,7 +33,7 @@ export default function Home() {
     })
 
     const cssEditor = monaco.editor.create($cssEditor.current, {
-      value: await db.getItem('css') || '',
+      value: await db.getItem('css') || defaultCSSCode,
       language: 'css',
       minimap: {
         enabled: false
