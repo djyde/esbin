@@ -1,5 +1,4 @@
-import App from './app/App.svelte'
-import './styles/index.css'
-new App({
-  target: document.querySelector('#root')
-})
+import App from './app'
+import { render } from 'react-dom'
+
+render(App, document.querySelector('#root'))
