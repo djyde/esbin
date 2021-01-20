@@ -41,3 +41,21 @@ export function jspmPlugin({ types: t }) {
     },
   };
 }
+
+
+export const makeHTML = (css, js) => {
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <style>
+          ${css}
+        </style>
+      </head>
+      <body>
+        <div id="root" />
+        <script type="module">${js}</script>
+      </body>
+    </html>
+  `;
+}
