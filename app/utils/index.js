@@ -1,6 +1,12 @@
 const PKG = 'jspm.dev'
 import { currentImportPackage } from '../store'
 
+import lf from 'localforage'
+
+export const db = lf.createInstance({
+  name: 'esbin'
+})
+
 export const importHelper = async (pkgName, source = PKG) => {
   const url = `https://${source}/${pkgName}`;
   currentImportPackage.set(pkgName)

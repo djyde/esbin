@@ -1,5 +1,5 @@
 <script>
-  import { importHelper, jspmPlugin, makeHTML } from "./utils";
+  import { db, importHelper, jspmPlugin, makeHTML } from "./utils";
   import { fade } from 'svelte/transition';
   import { currentImportPackage } from "./store";
   import { onMount } from "svelte";
@@ -11,23 +11,6 @@
 
   let transformTimeJS = 0
   let transformTimeCSS = 0
-
-  const defaultCode = `// import any npm packages here, it will import the ES Module version (thanks jspm.dev)
-  
-import React from 'react'
-
-const root = document.querySelector('#root')
-root.textContent = 'Loading...'
-
-const App = () => <div>Hello ESbin</div>
-
-async function init() {
-  // You can dynamic import
-  const { render } = await import('react-dom')
-  render(<App />, root)
-}
-
-init()`;
 
   let transformed = "";
 
@@ -44,9 +27,31 @@ init()`;
   onMount(async () => {
     const monaco = await loader.init()
 
+    const defaultJsCode = await db.getItem('js') || `// import any npm packages here, it will import the ES Module version (thanks jspm.dev)
+  
+import React from 'react'
+
+const root = document.querySelector('#root')
+root.textContent = 'Loading...'
+
+const App = () => <div>Hello ESbin</div>
+
+async function init() {
+  // You can dynamic import
+  const { render } = await import('react-dom')
+  render(<App />, root)
+}
+
+init()`;
+
+    const defaultCSSCode = await db.getItem('css') || `body {
+  color: teal;
+}`
+
+
     jsEditor = monaco.editor.create(jsEditor$, {
       language: 'javascript',
-      value: defaultCode,
+      value: defaultJsCode,
       minimap: {
         enabled: false
       }
@@ -54,7 +59,7 @@ init()`;
 
     cssEditor = monaco.editor.create(cssEditor$, {
       language: 'css',
-      value: '',
+      value: defaultCSSCode,
       minimap: {
         enabled: false
       }
@@ -63,11 +68,13 @@ init()`;
     function updateJSFromEditor() {
       const value = jsEditor.getModel().getValue()
       transformJS(value)
+      db.setItem('js', value)
     }
 
     function updateCSSFromEditor(){
       const value = cssEditor.getModel().getValue()
       transformCSS(value)
+      db.setItem('css', value)
     }
 
     updateJSFromEditor()
