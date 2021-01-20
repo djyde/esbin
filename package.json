@@ -13,7 +13,9 @@
     "tailwindcss": "^2.0.2"
   },
   "dependencies": {
+    "@monaco-editor/loader": "^1.0.0",
     "lodash.throttle": "^4.1.1",
+    "monaco-editor": "^0.21.3",
     "svelte": "^3.31.2"
   }
 }

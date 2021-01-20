@@ -4,6 +4,7 @@
   import { currentImportPackage } from "./store";
   import { onMount } from "svelte";
   import throttle from 'lodash.throttle'
+  import loader from '@monaco-editor/loader';
 
   let transformedCSS = ''
   let transformingInfo = ''
@@ -40,48 +41,63 @@ init()`;
   let jsEditor;
   let cssEditor;
 
-  onMount(() => {
-    jsEditor = window.CodeMirror(jsEditor$, {
-      value: defaultCode,
-      theme: "duotone-light",
-      lineNumbers: true,
-      mode: "javascript",
-    });
-    function onJsChange (i) {
-      transformJS()
-    }
-    jsEditor.on('change', throttle(onJsChange, 1500, { leading: false}))
-    onJsChange(jsEditor)
+  onMount(async () => {
+    const monaco = await loader.init()
 
-    cssEditor = window.CodeMirror(cssEditor$, {
+    jsEditor = monaco.editor.create(jsEditor$, {
+      language: 'javascript',
+      value: defaultCode,
+      minimap: {
+        enabled: false
+      }
+    })
+
+    cssEditor = monaco.editor.create(cssEditor$, {
+      language: 'css',
       value: '',
-      theme: "duotone-light",
-      lineNumbers: true,
-      mode: "javascript",
-    });
-    function onCSSChange (i) {
-      transformCSS()
+      minimap: {
+        enabled: false
+      }
+    })
+
+    function updateJSFromEditor() {
+      const value = jsEditor.getModel().getValue()
+      transformJS(value)
     }
-    cssEditor.on('change', throttle(onCSSChange, 1500, { leading: false}))
-    onCSSChange(cssEditor)
+
+    function updateCSSFromEditor(){
+      const value = cssEditor.getModel().getValue()
+      transformCSS(value)
+    }
+
+    updateJSFromEditor()
+    updateCSSFromEditor()
+
+    jsEditor.onDidChangeModelContent(throttle(e => {
+      updateJSFromEditor()
+    }, 1500, { leading: false }))
+
+    cssEditor.onDidChangeModelContent(throttle(e => {
+      updateCSSFromEditor()
+    }, 1500, { leading: false }))
   });
 
-  async function transformCSS () {
+  async function transformCSS (source) {
     transforming = true
     transformingInfo = 'Processing CSS'
     const postcss = (await importHelper("postcss")).default
     const autoprefixer = (await importHelper('autoprefixer')).default
-
+    // const tailwindcss = (await importHelper('tailwindcss')).default
     try {
       const begin = performance.now()
       const processor = postcss([
+        // tailwindcss,
         autoprefixer
       ])
-      const result = processor.process(cssEditor.getValue())
+      const result = processor.process(source)
       const end = performance.now()
       transformTimeCSS = end - begin
       transformedCSS = result.css
-      console.log(result.css)
     } catch (e) {
 
     } finally {
@@ -90,7 +106,7 @@ init()`;
     }
   }
 
-  async function transformJS() {
+  async function transformJS(source) {
     if (!jsEditor) {
       return;
     }
@@ -106,7 +122,7 @@ init()`;
 
     const begin = performance.now()
     babel.transform(
-      jsEditor.getValue(),
+      source,
       {
         plugins: [jspmPlugin],
         presets: [presetReact.default],
