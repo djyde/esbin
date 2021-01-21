@@ -1,4 +1,10 @@
+const SOURCE = {
+  'skypack': 'cdn.skypack.dev',
+  'jspm': 'jspm.dev'
+}
+
 const PKG = "jspm.dev";
+
 import { currentImportPackage } from "../store";
 
 import lf from "localforage";
@@ -23,7 +29,7 @@ export function jspmPlugin({ types: t }) {
         if (
           [".", "/"].map((prefix) => !value.startsWith(prefix)).every(Boolean)
         ) {
-          path.node.source = t.stringLiteral(`https://${PKG}/${value}`);
+          path.node.source = t.stringLiteral(`https://${SOURCE.skypack}/${value}`);
         }
       },
       CallExpression(path) {
@@ -32,7 +38,7 @@ export function jspmPlugin({ types: t }) {
           if (
             [".", "/"].map((prefix) => !value.startsWith(prefix)).every(Boolean)
           ) {
-            path.node.arguments[0] = t.stringLiteral(`https://${PKG}/${value}`);
+            path.node.arguments[0] = t.stringLiteral(`https://${SOURCE.skypack}/${value}`);
           }
         }
       },
